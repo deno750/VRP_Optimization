@@ -8,9 +8,7 @@
 #include "utility.h"    //Structs and function used globally.
 #include "solver.h"
 
-//////////////////////////////////////////////////////
-//////////// MAIN ////////////////////////////////////
-//////////////////////////////////////////////////////
+// Download instances from here: http://vrp.atd-lab.inf.puc-rio.br/index.php/en/
 int main(int argc, const char *argv[])
 {
     instance inst;                          // create an empty tsp istance
@@ -19,11 +17,11 @@ int main(int argc, const char *argv[])
     
     print_instance(inst);                   // Show the istance
 
-    if (inst.params.method.use_cplex) {     // Solve using cplex
-        TSP_opt(&inst);
-    } else {                                // Solve using our heuristic methods
-        TSP_heuc(&inst);
-    }
+    //if (inst.params.method.use_cplex) {     // Solve using cplex
+    //    TSP_opt(&inst);
+    //} else {                                // Solve using our heuristic methods
+    //    TSP_heuc(&inst);
+    //}
     
     
     free_instance(&inst);

@@ -10,14 +10,14 @@ static double e_round(double x) {
     return (long) (x + r);
 }
 
-double calc_euc2d(point p1, point p2, int integer) {
+double calc_euc2d(node p1, node p2, int integer) {
     double dx = p1.x - p2.x;
     double dy = p1.y - p2.y;
     double dist = sqrt(dx*dx + dy*dy);
     return integer ? nint(dist) : dist;
 }
 
-double calc_pseudo_euc(point p1, point p2, int integer) {
+double calc_pseudo_euc(node p1, node p2, int integer) {
     double dx = p1.x - p2.x;
     double dy = p1.y - p2.y;
     double r = sqrt((dx*dx + dy*dy) / 10.0);
@@ -30,13 +30,13 @@ double calc_pseudo_euc(point p1, point p2, int integer) {
     }
 }
 
-double calc_man2d(point p1, point p2, int integer) {
+double calc_man2d(node p1, node p2, int integer) {
     double dx = fabs(p1.x - p2.x);
     double dy = fabs(p2.y - p2.y);
     return integer ? nint(dx + dy) : dx + dy;
 }
 
-double calc_max2d(point p1, point p2, int integer) {
+double calc_max2d(node p1, node p2, int integer) {
     double dx = fabs(p1.x - p2.x);
     double dy = fabs(p2.y - p2.y);
     dx = integer ? nint(dx) : dx;
@@ -44,11 +44,11 @@ double calc_max2d(point p1, point p2, int integer) {
     return dmax(dx, dy);
 }
 
-double calc_ceil2d(point p1, point p2) { //Returns always an integer value
+double calc_ceil2d(node p1, node p2) { //Returns always an integer value
     return ceil(calc_euc2d(p1, p2, 0));
 }
 
-static void calc_lat_lon(point p, double *lat, double *lon) {
+static void calc_lat_lon(node p, double *lat, double *lon) {
     double deg = (long) p.x; 
     double min = p.x - deg;
     *lat = PI * (deg + 5.0 * min / 3.0) / 180.0;
@@ -57,7 +57,7 @@ static void calc_lat_lon(point p, double *lat, double *lon) {
     *lon = PI * (deg + 5.0 * min / 3.0 ) / 180.0;
 }
 
-double calc_geo(point p1, point p2, int integer) {
+double calc_geo(node p1, node p2, int integer) {
     double lat1, lon1; // Latitude and longitude point 1
     double lat2, lon2; // Latitude and longitude point 2
     calc_lat_lon(p1, &lat1, &lon1);
@@ -71,8 +71,8 @@ double calc_geo(point p1, point p2, int integer) {
 }
 
 double calc_dist(int i, int j, instance *inst) {
-    point node1 = inst->nodes[i];
-    point node2 = inst->nodes[j];
+    node node1 = inst->nodes[i];
+    node node2 = inst->nodes[j];
     int integer = inst->params.integer_cost;
     if (inst->weight_type == EUC_2D) {
         return calc_euc2d(node1, node2, integer);

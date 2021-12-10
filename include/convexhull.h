@@ -11,8 +11,8 @@
 
 static int comparePoints(const void *lhs, const void *rhs);
 
-static bool ccw(const point *a, const point *b, const point *c);
+static bool ccw(const node *a, const node *b, const node *c);
 
-point* convexHull(point *p, int len, int* hsize);
+node* convexHull(node *p, int len, int* hsize);
 
 #endif

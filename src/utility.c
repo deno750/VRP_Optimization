@@ -355,6 +355,7 @@ void parse_instance(instance *inst) {
     inst->num_nodes = -1;
     inst->weight_type = -1;
     inst->num_columns = -1;
+    inst->is_vrp = false;
 
     // Open file
     FILE *fp = fopen(inst->params.file_path, "r");
@@ -364,7 +365,7 @@ void parse_instance(instance *inst) {
     char *par_name;          // name of the parameter in the readed line
     char *token1;            // value of the parameter in the readed line
     char *token2;            // second value of the parameter in the readed line (used for reading coordinates)
-    int active_section = 0;  // 0=reading parameters, 1=NODE_COORD_SECTION, 2=EDGE_WEIGHT_SECTION
+    active_section active_section = PARAM_SECTION; 
     char sep[] = " :\n\t\r"; // separator for parsing
 
     // Read the file line by line
@@ -373,7 +374,7 @@ void parse_instance(instance *inst) {
         par_name = strtok(line, sep);
 
         if(strncmp(par_name, "NAME", 4) == 0){
-			active_section = 0;
+			active_section = PARAM_SECTION;
             token1 = strtok(NULL, sep);
             inst->name = CALLOC(strlen(token1), char);   
             strncpy(inst->name, token1, strlen(token1));
@@ -381,7 +382,7 @@ void parse_instance(instance *inst) {
 		}
 
 		if(strncmp(par_name, "COMMENT", 7) == 0){
-			active_section = 0;   
+			active_section = PARAM_SECTION;   
             inst->comment = NULL; // Need to set this null in order to avoid crashes in free_instance function
             //We don't do anything with this parameter because we don't care about the comment  
 			continue;
@@ -389,21 +390,30 @@ void parse_instance(instance *inst) {
 
         if(strncmp(par_name, "TYPE", 4) == 0){
             token1 = strtok(NULL, sep);  
-            if(strncmp(token1, "TSP", 3) != 0) LOG_E(" format error:  only TYPE == TSP implemented so far!");
-            active_section = 0;
+            if(strncmp(token1, "CVRP", 4) == 0) { 
+                inst->is_vrp = true; 
+            };
+            active_section = PARAM_SECTION;
             continue;
 		}
 
         if(strncmp(par_name, "DIMENSION", 9) == 0 ){
             token1 = strtok(NULL, sep);
             inst->num_nodes = atoi(token1);
-            inst->nodes = CALLOC(inst->num_nodes, point);
-            active_section = 0;  
+            inst->nodes = CALLOC(inst->num_nodes, node);
+            active_section = PARAM_SECTION;  
+            continue;
+		}
+
+        if(strncmp(par_name, "CAPACITY", 8) == 0 ){
+            token1 = strtok(NULL, sep);
+            inst->capacity = atoi(token1);
+            active_section = PARAM_SECTION;  
             continue;
 		}
 
         if(strncmp(par_name, "EOF", 3) == 0 ){
-			active_section = 0;
+			active_section = PARAM_SECTION;
 			break;
 		}
 
@@ -416,36 +426,66 @@ void parse_instance(instance *inst) {
             if (strncmp(token1, "GEO", 3) == 0) inst->weight_type = GEO;
             if (strncmp(token1, "ATT", 3) == 0) inst->weight_type = ATT;
             if (strncmp(token1, "EXPLICIT", 8) == 0) LOG_E("Wrong edge weight type, this program resolve only 2D TSP case with coordinate type.");
-            active_section = 0;  
+            active_section = PARAM_SECTION;  
             continue;
 		}
 
         if (strncmp(par_name, "NODE_COORD_SECTION", 18) == 0){
-            active_section = 1;
+            active_section = NODE_COORD_SECTION;
             continue;
         }
 
         if (strncmp(par_name, "EDGE_WEIGHT_SECTION", 19) == 0){
-            active_section = 2;
+            active_section = EDGE_WEIGHT_SECTION;
+            continue;
+        }
+
+        if (strncmp(par_name, "DEMAND_SECTION", 14) == 0){
+            active_section = DEMAND_SECTION;
+            continue;
+        }
+
+        if (strncmp(par_name, "DEPOT_SECTION", 13) == 0){
+            active_section = DEPOT_SECTION;
             continue;
         }
 
         // NODE_COORD_SECTION
-        if(active_section == 1){ 
+        if(active_section == NODE_COORD_SECTION){ 
             int i = atoi(par_name) - 1; // Nodes in problem's file start from index 1
-			if ( i < 0 || i >= inst->num_nodes) LOG_E(" ... unknown node in NODE_COORD_SECTION section");     
+			if ( i < 0 || i >= inst->num_nodes) LOG_E(" ... unknown node in NODE_COORD_SECTION");     
 			token1 = strtok(NULL, sep);
 			token2 = strtok(NULL, sep);
-            point p = {atof(token1), atof(token2)};
+            node p = {atof(token1), atof(token2), 0, false};
 			inst->nodes[i] = p;
             continue;
         }
         
         // EDGE_WEIGHT_SECTION
-        if (active_section == 2) { // Are we going to use this??
+        if (active_section == EDGE_WEIGHT_SECTION) { // Are we going to use this??
 
             continue;
         }
+
+        if (active_section == DEMAND_SECTION) {
+            int i = atoi(par_name) - 1; // Nodes in problem's file start from index 1
+			if ( i < 0 || i >= inst->num_nodes) LOG_E(" ... unknown node in DEMAND_SECTION"); 
+            token1 = strtok(NULL, sep);
+			token2 = strtok(NULL, sep);
+            //int node_idx = atoi(token1);
+            int demand = atoi(token1);
+            inst->nodes[i].demand = demand;
+            continue;
+        }
+
+        if (active_section == DEPOT_SECTION) {
+            int i = atoi(par_name) - 1; // Nodes in problem's file start from index 1
+            if (i >= inst->num_nodes) LOG_E(" ... unknown node in DEPOT_SECTION"); 
+            if (i == -1) { continue; }
+            inst->nodes[i].is_depot = true;
+            continue;
+        }
+        
     }
 
     // close file
@@ -728,8 +768,8 @@ void copy_instance(instance *dst, instance *src) {
     dst->comment = NULL;
     dst->params.method.name = NULL;
     if (src->nodes) {
-        dst->nodes = MALLOC(src->num_nodes, point);
-        memcpy(dst->nodes, src->nodes, sizeof(point) * src->num_nodes);
+        dst->nodes = MALLOC(src->num_nodes, node);
+        memcpy(dst->nodes, src->nodes, sizeof(node) * src->num_nodes);
     }
     if (src->ind) {
         dst->ind = MALLOC(src->num_columns, int);

@@ -316,7 +316,7 @@ int HEU_extramileage(instance *inst) {
 //Extramileage algorithm using convex hull
 int HEU_extramileage2(instance *inst) {
     int hsize;
-    point *hull = convexHull(inst->nodes, inst->num_nodes, &hsize);
+    node *hull = convexHull(inst->nodes, inst->num_nodes, &hsize);
     int *hindex = CALLOC(hsize, int);
     int *nodes_visited = CALLOC(inst->num_nodes, int); // Stores nodes visited in tour
     int num_visited = hsize;
@@ -330,9 +330,9 @@ int HEU_extramileage2(instance *inst) {
     
     int k = 0;
     for (int i = 0; i < hsize; i++) {
-        point p1 = hull[i];
+        node p1 = hull[i];
         for (int j = 0; j < inst->num_nodes; j++) {
-            point p2 = inst->nodes[j];
+            node p2 = inst->nodes[j];
             if (p1.x == p2.x && p1.y == p2.y) {
                 hindex[k] = j;
                 nodes_visited[j] = 1;

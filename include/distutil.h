@@ -50,7 +50,7 @@ static double e_round(double x);
  * @param integer 1 if the retured distance should be integer, 0 otherwise
  * @returns the eucledian 2d distance
  */
-double calc_euc2d(point p1, point p2, int integer);
+double calc_euc2d(node p1, node p2, int integer);
 
 /**
  * Calculates the pseudo euclidean 2d distance between two points.
@@ -63,7 +63,7 @@ double calc_euc2d(point p1, point p2, int integer);
  * @param integer 1 if the retured distance should be integer, 0 otherwise
  * @returns the pseudo eucledian 2d distance
  */
-double calc_pseudo_euc(point p1, point p2, int integer);
+double calc_pseudo_euc(node p1, node p2, int integer);
 
 /**
  * Calculates the manhattan 2d distance between two points.
@@ -76,7 +76,7 @@ double calc_pseudo_euc(point p1, point p2, int integer);
  * @param integer 1 if the retured distance should be integer, 0 otherwise
  * @returns the manhattan 2d distance
  */
-double calc_man2d(point p1, point p2, int integer);
+double calc_man2d(node p1, node p2, int integer);
 
 /**
  * Calculates the maximum 2d distance between two points.
@@ -89,7 +89,7 @@ double calc_man2d(point p1, point p2, int integer);
  * @param integer 1 if the retured distance should be integer, 0 otherwise
  * @returns the max 2d distance
  */
-double calc_max2d(point p1, point p2, int integer);
+double calc_max2d(node p1, node p2, int integer);
 
 /**
  * Calculates the ceiling of euclidean 2d distance between two points.
@@ -101,7 +101,7 @@ double calc_max2d(point p1, point p2, int integer);
  * @param p2 Point 2
  * @returns the ceil 2d distance
  */
-double calc_ceil2d(point p1, point p2);  //Returns always an integer value
+double calc_ceil2d(node p1, node p2);  //Returns always an integer value
 
 
 /**
@@ -111,7 +111,7 @@ double calc_ceil2d(point p1, point p2);  //Returns always an integer value
  * @param lat Latitude pointer 
  * @param lon Longitude pointer
  */
-static void calc_lat_lon(point p, double *lat, double *lon);
+static void calc_lat_lon(node p, double *lat, double *lon);
 
 /**
  * Calculates the geographical distance between two points.
@@ -124,7 +124,7 @@ static void calc_lat_lon(point p, double *lat, double *lon);
  * @param integer 1 if the retured distance should be integer, 0 otherwise
  * @returns the geo distance
  */
-double calc_geo(point p1, point p2, int integer);
+double calc_geo(node p1, node p2, int integer);
 
 /**
  * Calculating the distance based on the instance's weight_type

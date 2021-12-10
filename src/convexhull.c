@@ -10,8 +10,8 @@
 #include <stdlib.h>
 
 static int comparePoints(const void *lhs, const void *rhs) {
-    const point* lp = lhs;
-    const point* rp = rhs;
+    const node* lp = lhs;
+    const node* rp = rhs;
     if (lp->x < rp->x)
         return -1;
     if (rp->x < lp->x)
@@ -23,21 +23,21 @@ static int comparePoints(const void *lhs, const void *rhs) {
     return 0;
 }
 
-static bool ccw(const point *a, const point *b, const point *c) {
+static bool ccw(const node *a, const node *b, const node *c) {
     return (b->x - a->x) * (c->y - a->y)
          > (b->y - a->y) * (c->x - a->x);
 }
 
-point* convexHull(point *p, int len, int* hsize) {
+node* convexHull(node *p, int len, int* hsize) {
     if (len == 0) {
         *hsize = 0;
         return NULL;
     }
  
     int i, size = 0, capacity = 4;
-    point* hull = MALLOC(capacity, point);
+    node* hull = MALLOC(capacity, node);
  
-    qsort(p, len, sizeof(point), comparePoints);
+    qsort(p, len, sizeof(node), comparePoints);
  
     /* lower hull */
     for (i = 0; i < len; ++i) {
@@ -45,7 +45,7 @@ point* convexHull(point *p, int len, int* hsize) {
             --size;
         if (size == capacity) {
             capacity *= 2;
-            hull = REALLOC(hull, capacity , point);
+            hull = REALLOC(hull, capacity , node);
         }
         assert(size >= 0 && size < capacity);
         hull[size] = p[i];
@@ -59,7 +59,7 @@ point* convexHull(point *p, int len, int* hsize) {
             --size;
         if (size == capacity) {
             capacity *= 2;
-            hull = REALLOC(hull, capacity, point);
+            hull = REALLOC(hull, capacity, node);
         }
         assert(size >= 0 && size < capacity);
         hull[size] = p[i];
@@ -67,7 +67,7 @@ point* convexHull(point *p, int len, int* hsize) {
     }
     --size;
     assert(size >= 0);
-    hull = REALLOC(hull, size, point);
+    hull = REALLOC(hull, size, node);
     *hsize = size;
     return hull;
 }

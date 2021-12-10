@@ -8,6 +8,7 @@
 #include <cplex.h>
 #include <sys/time.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MALLOC(nnum,type) ( (type *) malloc (nnum * sizeof(type)) )
 #define CALLOC(nnum,type) ( (type *) calloc (nnum, sizeof(type)) )
@@ -92,6 +93,16 @@ typedef enum {
 #define SOLVER_DEFAULT_NAME "INCUMBENT CALLBACK"
 
 
+// Enum useful for the parser
+typedef enum {
+    PARAM_SECTION,
+    NODE_COORD_SECTION,
+    EDGE_WEIGHT_SECTION,
+    DEMAND_SECTION,
+    DEPOT_SECTION
+} active_section;
+
+
 
 // ================ Edge types =======================
 typedef enum {
@@ -122,11 +133,13 @@ typedef struct {
     int callback_2opt;  // Used in incubement callbacks for 2opt refinement
 } instance_params;
 
-// Definition of Point
+// Definition of Node
 typedef struct {
     double x;
     double y;
-} point;
+    int demand;
+    bool is_depot;
+} node;
 
 // Edge that connects node i and node j.
 // Directed edge: i -> j
@@ -149,8 +162,10 @@ typedef struct {
 
     char *name;
     char *comment;
-    point *nodes;
+    bool is_vrp;                
+    node *nodes;
     int num_nodes;
+    int capacity;               // Truck's capacity
     weight_type weight_type;
     long num_columns;           // The number of variables. It is used in callback method
     int* ind;                   // List of the indices of solution values in cplex. Needed for updating manually the incubement in cplex. Used in callbacks

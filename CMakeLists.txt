@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(tsp)
+project(cvrp)
 
 include_directories(include)
 
-file(GLOB tsp_SRC CONFIGURE_DEPENDS "src/*.c" )
+file(GLOB cvrp_SRC CONFIGURE_DEPENDS "src/*.c" )
 
-add_executable(${PROJECT_NAME} ${tsp_SRC})
+add_executable(${PROJECT_NAME} ${cvrp_SRC})
 
 add_definitions(-DVERSION="1.0") #Software's current version
 #add_definitions(-DDEBUG) #Whether debug version is needed

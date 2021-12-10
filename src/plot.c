@@ -24,7 +24,7 @@ void plot_in_file(PLOT plot, const char* name) {
     fprintf(plot, "set output '../plot/%s.jpg'\n", name);
 }
 
-void plot_edge(PLOT plot, point i, point j) {
+void plot_edge(PLOT plot, node i, node j) {
     //The points should be in different blocks. An empty line between the blocks
     /**
      * x1 y1
@@ -42,11 +42,11 @@ void plot_edge(PLOT plot, point i, point j) {
     fprintf(plot, "%lf %lf \n\n", j.x, j.y);
 }
 
-void plot_vector(PLOT plot, point i, point j) {
+void plot_vector(PLOT plot, node i, node j) {
     fprintf(plot, "%lf %lf\n %lf %lf\n", i.x, i.y, j.x - i.x, j.y - i.y);
 }
 
-void plot_point(PLOT plot, point p) {
+void plot_point(PLOT plot, node p) {
     fprintf(plot, "%lf %lf \n", p.x, p.y);
 }
 

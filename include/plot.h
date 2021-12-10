@@ -47,7 +47,7 @@ void plot_in_file(PLOT plot, const char* name);
  * @param i The index of node i
  * @param j The index of node j
  */
-void plot_edge(PLOT plot, point i, point j);
+void plot_edge(PLOT plot, node i, node j);
 
 /**
  * Plot a vector between point i and point j
@@ -56,7 +56,7 @@ void plot_edge(PLOT plot, point i, point j);
  * @param i The index of node i
  * @param j The index of node j
  */
-void plot_vector(PLOT plot, point i, point j);
+void plot_vector(PLOT plot, node i, node j);
 
 /**
  * Draws a point
@@ -64,7 +64,7 @@ void plot_vector(PLOT plot, point i, point j);
  * @param plot The plot pipe
  * @param p The point to plot
  */
-void plot_point(PLOT plot, point p);
+void plot_point(PLOT plot, node p);
 
 /**
  * Closes the plot pipe
