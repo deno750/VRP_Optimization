@@ -37,10 +37,10 @@
     <img src="https://github.com/deno750/TSP_Optimization/raw/master/tsp.jpg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Traveler salesman problem optimization</h3>
+  <h3 align="center">Capacitated vehicle routing problem optimization</h3>
 
   <p align="center">
-    Various algorithms to solve the traveler salesman problem!
+    Various algorithms to solve the Capacitated vehicle routing problem!
     <br />
     <a href="https://github.com/deno750/TSP_Optimization/raw/master/TSP_Optimization%20-%20Deronjic%20-%20Ivancich.pdf">📄Paper</a>
     ·
@@ -63,9 +63,9 @@
 
 
 ## Overview
-This is a project for the course Operations Research 2 taken by prof. Matteo Fischetti in the a.y. 2020/2021
+This project focuses on solving CVRP with different algorithms.
 
-This project focuses on solving TSPs with different algorithms
+Check [here](https://how-to.aimms.com/Articles/332/332-Formulation-CVRP.html) the mathematical formulation.
 
 ## Download
 

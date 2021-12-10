@@ -162,7 +162,8 @@ typedef struct {
 
     char *name;
     char *comment;
-    bool is_vrp;                
+    bool is_vrp;         
+    int num_vehicles;           // The number of vehicles       
     node *nodes;
     int num_nodes;
     int capacity;               // Truck's capacity

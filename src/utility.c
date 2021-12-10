@@ -69,6 +69,8 @@ void parse_comand_line(int argc, const char *argv[], instance *inst) {
     inst->thread_seeds = NULL;
     inst->solution.edges = NULL;
     inst->solution.xbest = NULL;
+    inst->is_vrp = false;
+    inst->num_vehicles = 1; // At least one vehicle
     int need_help = 0;
     int show_methods = 0;
     
@@ -91,6 +93,15 @@ void parse_comand_line(int argc, const char *argv[], instance *inst) {
         if (strcmp("-verbose", argv[i]) == 0) { 
             if (check_input_index_validity(i, argc, &need_help)) continue;
             inst->params.verbose = atoi(argv[++i]); continue; 
+        }
+        if (strcmp("-vehicles", argv[i]) == 0) {
+            if (check_input_index_validity(i, argc, &need_help)) continue;
+            int num_vehicles = atoi(argv[++i]);
+            if (num_vehicles < 1) {
+                LOG_E("The number of vehicles must be at least 1");
+            }
+            inst->num_vehicles = num_vehicles; 
+            continue;
         }
         if (strcmp("-method", argv[i]) == 0) {
             if (check_input_index_validity(i, argc, &need_help)) continue;
@@ -327,6 +338,7 @@ void parse_comand_line(int argc, const char *argv[], instance *inst) {
     if (need_help) {
         printf("-f <file's path>          To pass the problem's path\n");
         printf("-t <time>                 The time limit in seconds\n");
+        printf("-vehicles <num vehicles>  The number of vehicles available\n");
         printf("-threads <num threads>    The number of threads to use\n");
         printf("-verbose <level>          The verbosity level of the debugging printing\n");
         printf("-method <type>            The method used to solve the problem. Use \"--methods\" to see the list of available methods\n");
@@ -355,7 +367,6 @@ void parse_instance(instance *inst) {
     inst->num_nodes = -1;
     inst->weight_type = -1;
     inst->num_columns = -1;
-    inst->is_vrp = false;
 
     // Open file
     FILE *fp = fopen(inst->params.file_path, "r");
