@@ -203,7 +203,7 @@ int TSP_opt(instance *inst) {
         /*if (inst->params.verbose >= 5) {
             LOG_I("Cplex error code: %d", status);
         }*/
-        if (status = CPX_STAT_ABORT_TIME_LIM) {
+        if (status == CPX_STAT_ABORT_TIME_LIM) {
             LOG_I("Time limit exceeded");
         } else {
             LOG_E("Cplex solver encountered an error with error code: %d", status);
